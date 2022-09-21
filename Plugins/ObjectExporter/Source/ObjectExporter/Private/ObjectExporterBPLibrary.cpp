@@ -160,7 +160,7 @@ bool UObjectExporterBPLibrary::ExportStaticMesh(const UStaticMesh* StaticMesh, c
                 {
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
-                    FVector Normal = FVector(TangentZ.X, TangentZ.Y, TangentZ.Z) * TangentZ.W;
+                    FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z) * TangentZ.W;
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
                     *FileWriter << Position;
@@ -242,7 +242,7 @@ bool UObjectExporterBPLibrary::ExportSkeletalMesh(const USkeletalMesh* SkeletalM
                 {
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
-                    FVector Normal = FVector(TangentZ.X, TangentZ.Y, TangentZ.Z);
+                    FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z);
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
                     *FileWriter << Position;
@@ -352,9 +352,9 @@ bool UObjectExporterBPLibrary::ExportSkeleton(const USkeleton* Skeleton, const F
             *FileWriter << NumPosBones;
             for (FTransform BoneTransform : BonePose)
             {
-                FQuat Rot = BoneTransform.GetRotation();
-                FVector Tran = BoneTransform.GetTranslation();
-                FVector Scale = BoneTransform.GetScale3D();
+                FQuat4f Rot = FQuat4f(BoneTransform.GetRotation());
+                FVector3f Tran = FVector3f(BoneTransform.GetTranslation());
+                FVector3f Scale = FVector3f(BoneTransform.GetScale3D());
                 *FileWriter << Rot;
                 *FileWriter << Tran;
                 *FileWriter << Scale;
@@ -458,7 +458,7 @@ bool UObjectExporterBPLibrary::ExportCamera(const UCameraComponent* Camera, cons
 
         TSharedRef<FJsonObject> JsonCamera = MakeShareable(new FJsonObject);
 
-        const FVector Position = Camera->GetComponentLocation();
+        const FVector3f Position = FVector3f(Camera->GetComponentLocation());
         TSharedRef<FJsonObject> JsonPosition = MakeShareable(new FJsonObject);
         JsonPosition->SetNumberField("x", Position.X);
         JsonPosition->SetNumberField("y", Position.Y);
@@ -617,8 +617,8 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             UCameraComponent* Component = Cast<UCameraComponent>(Actor->GetComponentByClass(UCameraComponent::StaticClass()));
             check(Component != nullptr);
             auto Transform = Component->GetComponentToWorld();
-            auto Location = Transform.GetLocation();
-            auto Rotation = Transform.GetRotation();
+            auto Location = FVector3f(Transform.GetLocation());
+            auto Rotation = FQuat4f(Transform.GetRotation());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto Target = Location + Direction * 100.0f;
@@ -642,8 +642,8 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             UDirectionalLightComponent* Component = Cast<UDirectionalLightComponent>(Actor->GetComponentByClass(UDirectionalLightComponent::StaticClass()));
             check(Component != nullptr);
             auto Transform = Component->GetComponentToWorld();
-            auto Location = Transform.GetLocation();
-            auto Rotation = Transform.GetRotation();
+            auto Location = FVector3f(Transform.GetLocation());
+            auto Rotation = FQuat4f(Transform.GetRotation());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto Color = FLinearColor::FromSRGBColor(Component->LightColor);
@@ -665,7 +665,8 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             UPointLightComponent* Component = Cast<UPointLightComponent>(Actor->GetComponentByClass(UPointLightComponent::StaticClass()));
             check(Component != nullptr);
             auto Transform = Component->GetComponentToWorld();
-            auto Location = Transform.GetLocation();
+            auto Location = FVector3f(Transform.GetLocation());
+            auto Rotation = FQuat4f(Transform.GetRotation());
             auto AttenuationRadius = Component->AttenuationRadius;
             auto LightFalloffExponent = Component->LightFalloffExponent;
             auto Color = FLinearColor::FromSRGBColor(Component->LightColor);
@@ -690,8 +691,8 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             UStaticMeshComponent* Component = Cast<UStaticMeshComponent>(Actor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
             check(Component != nullptr);
             auto Transform = Component->GetComponentToWorld();
-            auto Location = Transform.GetLocation();
-            auto Rotation = Transform.GetRotation();
+            auto Location = FVector3f(Transform.GetLocation());
+            auto Rotation = FQuat4f(Transform.GetRotation());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto ResourceFullName = Component->GetStaticMesh()->GetPathName();
@@ -737,8 +738,8 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             USkeletalMeshComponent* Component = Cast<USkeletalMeshComponent>(Actor->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
             check(Component != nullptr);
             auto Transform = Component->GetComponentToWorld();
-            auto Location = Transform.GetLocation();
-            auto Rotation = Transform.GetRotation();
+            auto Location = FVector3f(Transform.GetLocation());
+            auto Rotation = FQuat4f(Transform.GetRotation());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto ResourceFullName = Component->SkeletalMesh->GetPathName();
