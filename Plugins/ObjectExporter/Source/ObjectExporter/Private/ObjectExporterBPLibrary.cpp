@@ -531,6 +531,23 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
             MaterialInstace->GetAllTextureParameterInfo(OutTextureParameterInfo, GuidsTexture);
             int32 BlendMode = (int32)MaterialInstace->BlendMode;
             *FileWriter << BlendMode;
+
+            EMaterialShadingModel MaterialShadingModel = MaterialInstace->GetShadingModels().GetFirstShadingModel();
+            int32 ShadingModel = (int32)MaterialShadingModel;
+            *FileWriter << ShadingModel;
+
+            TArray<FMaterialParameterInfo> OutScalarParameterInfo;
+            TArray<FGuid> GuidsScalar;
+            MaterialInstace->GetAllScalarParameterInfo(OutScalarParameterInfo, GuidsScalar);
+            for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
+            {
+                float Opacity = 1.0f;
+                if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Opacity))
+                {
+                    *FileWriter << Opacity;
+                }
+            }
+
             for (const FMaterialParameterInfo& ParameterInfo : OutTextureParameterInfo)
             {
                 UTexture* Texture = nullptr;
@@ -554,22 +571,6 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                     FString CmdString = FPaths::ProjectPluginsDir() + "ObjectExporter/texconv.exe -ft dds " + FPaths::ProjectIntermediateDir() + ResourcePath + ".TGA" + " -o " + SavePath;
                     CmdString = CmdString.Replace(TEXT("/"), TEXT("\\"));
                     system(TCHAR_TO_ANSI(*CmdString));
-                }
-            }
-
-            EMaterialShadingModel MaterialShadingModel = MaterialInstace->GetShadingModels().GetFirstShadingModel();
-            int32 ShadingModel = (int32)MaterialShadingModel;
-            *FileWriter << ShadingModel;
-
-            TArray<FMaterialParameterInfo> OutScalarParameterInfo;
-            TArray<FGuid> GuidsScalar;
-            MaterialInstace->GetAllScalarParameterInfo(OutScalarParameterInfo, GuidsScalar);
-            for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
-            {
-                float Opacity = 1.0f;
-                if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Opacity))
-                {
-                    *FileWriter << Opacity;
                 }
             }
 
