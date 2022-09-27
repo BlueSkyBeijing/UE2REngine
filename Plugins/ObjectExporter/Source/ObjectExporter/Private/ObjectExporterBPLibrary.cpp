@@ -24,6 +24,7 @@
 #include "Rendering/SkeletalMeshLODRenderData.h"
 
 
+#define ROOT_PATH "REngine/"
 #define TEXTURE_PATH "REngine/Texture/"
 #define MATERIAL_PATH "REngine/Material/"
 #define STATICMESH_PATH "REngine/StaticMesh/"
@@ -586,7 +587,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
     return false;
 }
 
-bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FString& FullFilePathName)
+bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FString& FullFilePathName, bool CopyToPath, const FString& CopyPath)
 {
     if (!IsValid(WorldContextObject) || !IsValid(WorldContextObject->GetWorld()))
     {
@@ -794,6 +795,16 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
         FileWriter->Close();
         delete FileWriter;
         FileWriter = nullptr;
+
+        if (CopyToPath)
+        {
+            FString SavePath = FPaths::ProjectSavedDir() + ROOT_PATH;
+            // Cmd dir only \\ work
+            FString CmdString = "xcopy " + SavePath + " " + CopyPath;
+            CmdString = CmdString.Replace(TEXT("/"), TEXT("\\"));
+            CmdString += " /s/e/i/y";
+            system(TCHAR_TO_ANSI(*CmdString));
+        }
 
         UE_LOG(ObjectExporterBPLibraryLog, Log, TEXT("ExportMap: success."));
 

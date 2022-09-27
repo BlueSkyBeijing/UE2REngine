@@ -46,6 +46,6 @@ class UObjectExporterBPLibrary : public UBlueprintFunctionLibrary
     static bool ExportMaterialInstance(const UMaterialInstance* MaterialInstace, const FString& FullFilePathName);
 
     UFUNCTION(BlueprintCallable, meta = (DisplayName = "Export Map", Keywords = "Export Map"), Category = "UObjectExporter")
-    static bool ExportMap(UObject* WorldContextObject, const FString& FullFilePathName);
+    static bool ExportMap(UObject* WorldContextObject, const FString& FullFilePathName, bool CopyToPath, const FString& CopyPath);
 
 };
