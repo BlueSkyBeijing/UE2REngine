@@ -177,7 +177,7 @@ bool UObjectExporterBPLibrary::ExportStaticMesh(const UStaticMesh* StaticMesh, c
 
                 for (int32 iIndex = 0; iIndex < Indices.Num(); iIndex++)
                 {
-                    uint16 Index = Indices[iIndex];
+                    uint32 Index = Indices[iIndex];
                     *FileWriter << Index;
                 }
 
@@ -279,7 +279,7 @@ bool UObjectExporterBPLibrary::ExportSkeletalMesh(const USkeletalMesh* SkeletalM
 
                 for (int32 iIndex = 0; iIndex < Indices.Num(); iIndex++)
                 {
-                    uint16 Index = Indices[iIndex];
+                    uint32 Index = Indices[iIndex];
                     *FileWriter << Index;
                 }
                 
