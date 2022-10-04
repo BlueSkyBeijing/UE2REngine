@@ -542,10 +542,57 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
             MaterialInstace->GetAllScalarParameterInfo(OutScalarParameterInfo, GuidsScalar);
             for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
             {
-                float Opacity = 1.0f;
-                if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Opacity))
+                if (ParameterInfo.Name == FName("Metallic"))
                 {
-                    *FileWriter << Opacity;
+                    float Metallic = 0.0f;
+                    if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Metallic))
+                    {
+                        *FileWriter << Metallic;
+                    }
+
+                    break;
+                }
+            }
+
+            for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
+            {
+                if (ParameterInfo.Name == FName("Specular"))
+                {
+                    float Specular = 0.0f;
+                    if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Specular))
+                    {
+                        *FileWriter << Specular;
+                    }
+
+                    break;
+                }
+            }
+
+            for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
+            {
+                if (ParameterInfo.Name == FName("Roughness"))
+                {
+                    float Roughness = 0.0f;
+                    if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Roughness))
+                    {
+                        *FileWriter << Roughness;
+                    }
+
+                    break;
+                }
+            }
+
+            for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
+            {
+                if (ParameterInfo.Name == FName("Opacity"))
+                {
+                    float Opacity = 1.0f;
+                    if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Opacity))
+                    {
+                        *FileWriter << Opacity;
+                    }
+
+                    break;
                 }
             }
 
