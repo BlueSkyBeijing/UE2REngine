@@ -596,6 +596,37 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                 }
             }
 
+            TArray<FMaterialParameterInfo> OutVectorParameterInfo;
+            TArray<FGuid> GuidsVector;
+            MaterialInstace->GetAllVectorParameterInfo(OutVectorParameterInfo, GuidsVector);
+            for (const FMaterialParameterInfo& ParameterInfo : OutVectorParameterInfo)
+            {
+                if (ParameterInfo.Name == FName("EmissiveColor"))
+                {
+                    FLinearColor EmissiveColor;
+                    if (MaterialInstace->GetVectorParameterValue(ParameterInfo, EmissiveColor))
+                    {
+                        *FileWriter << EmissiveColor;
+                    }
+
+                    break;
+                }
+            }
+
+            for (const FMaterialParameterInfo& ParameterInfo : OutVectorParameterInfo)
+            {
+                if (ParameterInfo.Name == FName("SubsurfaceColor"))
+                {
+                    FLinearColor SubsurfaceColor;
+                    if (MaterialInstace->GetVectorParameterValue(ParameterInfo, SubsurfaceColor))
+                    {
+                        *FileWriter << SubsurfaceColor;
+                    }
+
+                    break;
+                }
+            }
+
             for (const FMaterialParameterInfo& ParameterInfo : OutTextureParameterInfo)
             {
                 UTexture* Texture = nullptr;
