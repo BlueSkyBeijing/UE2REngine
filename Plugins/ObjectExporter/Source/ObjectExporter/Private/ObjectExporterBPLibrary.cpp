@@ -161,7 +161,8 @@ bool UObjectExporterBPLibrary::ExportStaticMesh(const UStaticMesh* StaticMesh, c
                 {
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
-                    FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z) * TangentZ.W;
+                    FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z);
+                    Normal.Normalize();
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
                     *FileWriter << Position;
