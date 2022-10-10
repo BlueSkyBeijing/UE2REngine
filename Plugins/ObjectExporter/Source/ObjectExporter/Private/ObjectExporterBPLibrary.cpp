@@ -774,6 +774,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             auto Transform = Component->GetComponentToWorld();
             auto Location = FVector3f(Transform.GetLocation());
             auto Rotation = FQuat4f(Transform.GetRotation());
+            auto Scale = FVector3f(Transform.GetScale3D());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto ResourceFullName = Component->GetStaticMesh()->GetPathName();
@@ -787,6 +788,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
 
             *FileWriter << Rotation;
             *FileWriter << Location;
+            *FileWriter << Scale;
             *FileWriter << ResourceName;
             *FileWriter << MaterialName;
 
@@ -821,6 +823,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             auto Transform = Component->GetComponentToWorld();
             auto Location = FVector3f(Transform.GetLocation());
             auto Rotation = FQuat4f(Transform.GetRotation());
+            auto Scale = FVector3f(Transform.GetScale3D());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto ResourceFullName = Component->SkeletalMesh->GetPathName();
@@ -838,6 +841,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
 
             *FileWriter << Rotation;
             *FileWriter << Location;
+            *FileWriter << Scale;
             *FileWriter << ResourceName;
             *FileWriter << AnimationName;
             *FileWriter << MaterialName;
