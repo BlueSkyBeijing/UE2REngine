@@ -538,6 +538,9 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
             int32 ShadingModel = (int32)MaterialShadingModel;
             *FileWriter << ShadingModel;
 
+            uint8 TwoSided = MaterialInstace->TwoSided;
+            *FileWriter << TwoSided;
+
             TArray<FMaterialParameterInfo> OutScalarParameterInfo;
             TArray<FGuid> GuidsScalar;
             MaterialInstace->GetAllScalarParameterInfo(OutScalarParameterInfo, GuidsScalar);
