@@ -648,7 +648,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                     AssetToolsModule.Get().ExportAssets(ObjectsToExport, *TempSavePath);
                     // Cmd dir only \\ work
                     IFileManager::Get().MakeDirectory(*SavePath);
-                    FString CmdString = FPaths::ProjectPluginsDir() + "ObjectExporter/texconv.exe -ft dds " + FPaths::ProjectIntermediateDir() + ResourcePath + ".TGA" + " -o " + SavePath;
+                    FString CmdString = FPaths::ProjectPluginsDir() + "ObjectExporter/texconv.exe -alpha -y -ft dds " + FPaths::ProjectIntermediateDir() + ResourcePath + ".TGA" + " -o " + SavePath;
                     CmdString = CmdString.Replace(TEXT("/"), TEXT("\\"));
                     system(TCHAR_TO_ANSI(*CmdString));
                 }
