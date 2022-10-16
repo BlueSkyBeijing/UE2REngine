@@ -630,6 +630,9 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                     break;
                 }
             }
+            
+            int32 NumTextureParam = OutTextureParameterInfo.Num();
+            *FileWriter << NumTextureParam;
 
             for (const FMaterialParameterInfo& ParameterInfo : OutTextureParameterInfo)
             {
@@ -642,6 +645,8 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                     FString ResourcePath, ResourceName;
                     ResourceFullName.Split(FString("."), &ResourcePath, &ResourceName);
 
+                    FString Name = ParameterInfo.Name.ToString();
+                    *FileWriter << Name;
                     *FileWriter << ResourceName;
 
                     FString TempSavePath = FPaths::ProjectIntermediateDir();
