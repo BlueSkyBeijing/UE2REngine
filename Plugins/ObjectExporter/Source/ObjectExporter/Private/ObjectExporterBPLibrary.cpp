@@ -161,12 +161,16 @@ bool UObjectExporterBPLibrary::ExportStaticMesh(const UStaticMesh* StaticMesh, c
                 {
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
+                    FVector4 TangentX = StaticMeshVertexBuffer.VertexTangentX(iVertex);
                     FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z);
+                    FVector3f Tangent = FVector3f(TangentX.X, TangentX.Y, TangentX.Z);
+
                     Normal.Normalize();
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
                     *FileWriter << Position;
                     *FileWriter << Normal;
+                    *FileWriter << Tangent;
                     *FileWriter << UV;
                 }
 
@@ -244,11 +248,14 @@ bool UObjectExporterBPLibrary::ExportSkeletalMesh(const USkeletalMesh* SkeletalM
                 {
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
+                    FVector4 TangentX = StaticMeshVertexBuffer.VertexTangentX(iVertex);
                     FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z);
+                    FVector3f Tangent = FVector3f(TangentX.X, TangentX.Y, TangentX.Z);
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
                     *FileWriter << Position;
                     *FileWriter << Normal;
+                    *FileWriter << Tangent;
                     *FileWriter << UV;
 
                     FBoneIndexType BoneIndex0 = BoneMap[WeightInfos[iVertex].InfluenceBones[0]];
