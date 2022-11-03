@@ -162,10 +162,9 @@ bool UObjectExporterBPLibrary::ExportStaticMesh(const UStaticMesh* StaticMesh, c
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
                     FVector4 TangentX = StaticMeshVertexBuffer.VertexTangentX(iVertex);
-                    FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z);
+                    FVector4f Normal = FVector4f(TangentZ.X, TangentZ.Y, TangentZ.Z, TangentZ.W);
                     FVector3f Tangent = FVector3f(TangentX.X, TangentX.Y, TangentX.Z);
 
-                    Normal.Normalize();
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
                     *FileWriter << Position;
@@ -249,7 +248,7 @@ bool UObjectExporterBPLibrary::ExportSkeletalMesh(const USkeletalMesh* SkeletalM
                     FVector3f Position = PositionVertexBuffer.VertexPosition(iVertex);
                     FVector4 TangentZ = StaticMeshVertexBuffer.VertexTangentZ(iVertex);
                     FVector4 TangentX = StaticMeshVertexBuffer.VertexTangentX(iVertex);
-                    FVector3f Normal = FVector3f(TangentZ.X, TangentZ.Y, TangentZ.Z);
+                    FVector4f Normal = FVector4f(TangentZ.X, TangentZ.Y, TangentZ.Z, TangentZ.W);
                     FVector3f Tangent = FVector3f(TangentX.X, TangentX.Y, TangentX.Z);
                     FVector2f UV = StaticMeshVertexBuffer.GetVertexUV(iVertex, 0);
 
