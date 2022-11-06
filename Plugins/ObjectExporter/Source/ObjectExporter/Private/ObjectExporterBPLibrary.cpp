@@ -306,7 +306,8 @@ bool UObjectExporterBPLibrary::ExportSkeletalMesh(const USkeletalMesh* SkeletalM
 
                 for (const FSkelMeshRenderSection& Section : CurLOD.RenderSections)
                 {
-                    *FileWriter << uint16(Section.MaterialIndex);
+                    int32 MaterialIndex = (int32)Section.MaterialIndex;
+                    *FileWriter << MaterialIndex;
                     *FileWriter << uint32(Section.BaseIndex);
                     *FileWriter << uint32(Section.NumTriangles);
                     *FileWriter << uint32(Section.BaseVertexIndex);
