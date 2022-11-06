@@ -40,9 +40,12 @@ public class ObjectExporter : ModuleRules
 				"SlateCore",
                 "Json",
                 "JsonUtilities",
+				"RenderCore",
+				"Renderer",
+				"RHI",
 				// ... add private dependencies that you statically link with here ...	
 			}
-            );
+			);
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(

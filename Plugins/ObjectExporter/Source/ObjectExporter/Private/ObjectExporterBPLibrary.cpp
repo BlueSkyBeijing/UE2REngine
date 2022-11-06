@@ -185,6 +185,17 @@ bool UObjectExporterBPLibrary::ExportStaticMesh(const UStaticMesh* StaticMesh, c
                     *FileWriter << Index;
                 }
 
+                int32 NumSection = CurLOD.Sections.Num();
+                *FileWriter << NumSection;
+
+                for (const FStaticMeshSection& Section : CurLOD.Sections)
+                {
+                    *FileWriter << int32(Section.MaterialIndex);
+                    *FileWriter << uint32(Section.FirstIndex);
+                    *FileWriter << uint32(Section.NumTriangles);
+                    *FileWriter << uint32(Section.MinVertexIndex);
+                    *FileWriter << uint32(Section.MaxVertexIndex);
+                }
                 //now save only lod 0
                 break;
             }
@@ -290,6 +301,18 @@ bool UObjectExporterBPLibrary::ExportSkeletalMesh(const USkeletalMesh* SkeletalM
                     *FileWriter << Index;
                 }
                 
+                int32 NumSection = CurLOD.RenderSections.Num();
+                *FileWriter << NumSection;
+
+                for (const FSkelMeshRenderSection& Section : CurLOD.RenderSections)
+                {
+                    *FileWriter << uint16(Section.MaterialIndex);
+                    *FileWriter << uint32(Section.BaseIndex);
+                    *FileWriter << uint32(Section.NumTriangles);
+                    *FileWriter << uint32(Section.BaseVertexIndex);
+                    *FileWriter << uint32(Section.NumVertices);
+                }
+
                 auto ResourceFullName = SkeletalMesh->GetSkeleton()->GetPathName();
 
                 FString ResourcePath, ResourceName;
@@ -792,19 +815,16 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
             auto ResourceFullName = Component->GetStaticMesh()->GetPathName();
-            auto MaterialFullName = Component->GetMaterial(0)->GetPathName();
+            auto NumMaterial = Component->GetNumMaterials();
 
             FString ResourcePath, ResourceName;
             ResourceFullName.Split(FString("."), &ResourcePath, &ResourceName);
-
-            FString MaterialPath, MaterialName;
-            MaterialFullName.Split(FString("."), &MaterialPath, &MaterialName);
 
             *FileWriter << Rotation;
             *FileWriter << Location;
             *FileWriter << Scale;
             *FileWriter << ResourceName;
-            *FileWriter << MaterialName;
+            *FileWriter << NumMaterial;
 
             FString SaveStaticMeshPath = FPaths::ProjectSavedDir() + STATICMESH_PATH + ResourceName + STATIC_MESH_BINARY_FILE_POSTFIX;
             ExportStaticMesh(Component->GetStaticMesh(), SaveStaticMeshPath);
@@ -816,6 +836,12 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
                 UMaterialInstance* Instance = Cast<UMaterialInstance>(Material);
                 if (Instance->IsValidLowLevel())
                 {
+                    auto MaterialFullName = Instance->GetPathName();
+                    FString MaterialPath, MaterialName;
+                    MaterialFullName.Split(FString("."), &MaterialPath, &MaterialName);
+
+                    *FileWriter << MaterialName;
+
                     FString SaveMaterialPath = FPaths::ProjectSavedDir() + MATERIAL_PATH + MaterialName + MATERIAL_BINARY_FILE_POSTFIX;
 
                     ExportMaterialInstance(Instance, SaveMaterialPath);
@@ -842,7 +868,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             auto Direction = Rotation.Vector();
             auto ResourceFullName = Component->SkeletalMesh->GetPathName();
             auto AnimationFullName = Component->AnimationData.AnimToPlay->GetPathName();
-            auto MaterialFullName = Component->GetMaterial(0)->GetPathName();
+            auto NumMaterial = Component->GetNumMaterials();
 
             FString ResourcePath, ResourceName;
             ResourceFullName.Split(FString("."), &ResourcePath, &ResourceName);
@@ -850,15 +876,12 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             FString AnimationPath, AnimationName;
             AnimationFullName.Split(FString("."), &AnimationPath, &AnimationName);
 
-            FString MaterialPath, MaterialName;
-            MaterialFullName.Split(FString("."), &MaterialPath, &MaterialName);
-
             *FileWriter << Rotation;
             *FileWriter << Location;
             *FileWriter << Scale;
             *FileWriter << ResourceName;
             *FileWriter << AnimationName;
-            *FileWriter << MaterialName;
+            *FileWriter << NumMaterial;
 
             FString SaveSkeletalMeshPath = FPaths::ProjectSavedDir() + SKELETALMESH_PATH + ResourceName + SKELETAL_MESH_BINARY_FILE_POSTFIX;
             ExportSkeletalMesh(Component->SkeletalMesh, SaveSkeletalMeshPath);
@@ -870,6 +893,12 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
                 UMaterialInstance* Instance = Cast<UMaterialInstance>(Material);
                 if (Instance->IsValidLowLevel())
                 {
+                    auto MaterialFullName = Instance->GetPathName();
+                    FString MaterialPath, MaterialName;
+                    MaterialFullName.Split(FString("."), &MaterialPath, &MaterialName);
+
+                    *FileWriter << MaterialName;
+
                     FString SaveMaterialPath = FPaths::ProjectSavedDir() + MATERIAL_PATH + MaterialName + MATERIAL_BINARY_FILE_POSTFIX;
 
                     ExportMaterialInstance(Instance, SaveMaterialPath);
