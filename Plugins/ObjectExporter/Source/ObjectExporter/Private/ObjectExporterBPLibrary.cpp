@@ -436,8 +436,7 @@ bool UObjectExporterBPLibrary::ExportAnimSequence(const UAnimSequence* AnimSeque
                 return false;
             }
      
-            const TArray<FRawAnimSequenceTrack>& AnimationData = AnimSequence->GetRawAnimationData();
-            const TArray<FTrackToSkeletonMap>& TrackToSkeMap = AnimSequence->GetRawTrackToSkeletonMapTable();
+            const TArray<FBoneAnimationTrack>& BoneAnimationTracks = AnimSequence->GetResampledTrackData();
 
             int32 NumberOfFrames = AnimSequence->GetNumberOfSampledKeys();
             *FileWriter << NumberOfFrames;
@@ -446,14 +445,16 @@ bool UObjectExporterBPLibrary::ExportAnimSequence(const UAnimSequence* AnimSeque
             *FileWriter << SequenceLength;
 
             int32 TrackIndex = 0;
-            for (FRawAnimSequenceTrack SequenceTrack : AnimationData)
+            for (FBoneAnimationTrack AnimationTrack : BoneAnimationTracks)
             {
-                int32 BoneIndex = TrackToSkeMap[TrackIndex].BoneTreeIndex;
+                FRawAnimSequenceTrack& AnimationData = AnimationTrack.InternalTrackData;
+
+                int32 BoneIndex = AnimationTrack.BoneTreeIndex;
                 *FileWriter << BoneIndex;
 
-                *FileWriter << SequenceTrack.PosKeys;
-                *FileWriter << SequenceTrack.RotKeys;
-                *FileWriter << SequenceTrack.ScaleKeys;
+                *FileWriter << AnimationData.PosKeys;
+                *FileWriter << AnimationData.RotKeys;
+                *FileWriter << AnimationData.ScaleKeys;
 
                 TrackIndex++;
             }
@@ -867,7 +868,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             auto Scale = FVector3f(Transform.GetScale3D());
             auto Rotator = Rotation.Rotator();
             auto Direction = Rotation.Vector();
-            auto ResourceFullName = Component->SkeletalMesh->GetPathName();
+            auto ResourceFullName = Component->GetSkeletalMeshAsset()->GetPathName();
             auto AnimationFullName = Component->AnimationData.AnimToPlay->GetPathName();
             auto NumMaterial = Component->GetNumMaterials();
 
@@ -885,7 +886,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             *FileWriter << NumMaterial;
 
             FString SaveSkeletalMeshPath = FPaths::ProjectSavedDir() + SKELETALMESH_PATH + ResourceName + SKELETAL_MESH_BINARY_FILE_POSTFIX;
-            ExportSkeletalMesh(Component->SkeletalMesh, SaveSkeletalMeshPath);
+            ExportSkeletalMesh(Component->GetSkeletalMeshAsset(), SaveSkeletalMeshPath);
 
             TArray<UMaterialInterface*> Materials = Component->GetMaterials();
 
@@ -906,7 +907,7 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
                 }
             }
 
-            auto SkeletonFullName = Component->SkeletalMesh->GetSkeleton()->GetPathName();
+            auto SkeletonFullName = Component->GetSkeletalMeshAsset()->GetSkeleton()->GetPathName();
 
             FString SkeletonPath, SkeletonName;
             SkeletonFullName.Split(FString("."), &SkeletonPath, &SkeletonName);
