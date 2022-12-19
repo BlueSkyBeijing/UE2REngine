@@ -22,6 +22,7 @@
 #include "Rendering/SkeletalMeshModel.h"
 #include "Rendering/SkeletalMeshRenderData.h"
 #include "Rendering/SkeletalMeshLODRenderData.h"
+#include "EditorFramework/AssetImportData.h"
 
 
 #define ROOT_PATH "REngine/"
@@ -685,9 +686,21 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                     TArray<UObject*> ObjectsToExport;
                     ObjectsToExport.Add(Texture);
                     AssetToolsModule.Get().ExportAssets(ObjectsToExport, *TempSavePath);
+
+                    FString FileExt = "TGA";
+                    if (Texture->AssetImportData->SourceData.SourceFiles.Num() > 0)
+                    {
+                        FString LeftS;
+                        FString RightS;
+                        Texture->AssetImportData->SourceData.SourceFiles[0].RelativeFilename.Split(".", &LeftS, &RightS, ESearchCase::CaseSensitive,
+                            ESearchDir::FromEnd);
+
+                        FileExt = RightS;
+                    }
+
                     // Cmd dir only \\ work
                     IFileManager::Get().MakeDirectory(*SavePath);
-                    FString CmdString = FPaths::ProjectPluginsDir() + "ObjectExporter/texconv.exe -alpha -y -ft dds " + FPaths::ProjectIntermediateDir() + ResourcePath + ".TGA" + " -o " + SavePath;
+                    FString CmdString = FPaths::ProjectPluginsDir() + "ObjectExporter/texconv.exe -alpha -y -ft dds " + FPaths::ProjectIntermediateDir() + ResourcePath + "." + FileExt + " -o " + SavePath;
                     CmdString = CmdString.Replace(TEXT("/"), TEXT("\\"));
                     system(TCHAR_TO_ANSI(*CmdString));
                 }
