@@ -687,7 +687,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                     ObjectsToExport.Add(Texture);
                     AssetToolsModule.Get().ExportAssets(ObjectsToExport, *TempSavePath);
 
-                    FString FileExt = "TGA";
+                    FString FileExt = "PNG";
                     if (Texture->AssetImportData->SourceData.SourceFiles.Num() > 0)
                     {
                         FString LeftS;
@@ -695,7 +695,10 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
                         Texture->AssetImportData->SourceData.SourceFiles[0].RelativeFilename.Split(".", &LeftS, &RightS, ESearchCase::CaseSensitive,
                             ESearchDir::FromEnd);
 
-                        FileExt = RightS;
+                        if (RightS.ToLower() == "exr")
+                        {
+                            FileExt = "EXR";
+                        }
                     }
 
                     // Cmd dir only \\ work
