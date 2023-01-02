@@ -784,10 +784,14 @@ bool UObjectExporterBPLibrary::ExportMap(UObject* WorldContextObject, const FStr
             auto Direction = Rotation.Vector();
             auto Color = FLinearColor::FromSRGBColor(Component->LightColor);
             auto Intensity = Component->Intensity;
-
+            auto ShadowDistance = Component->DynamicShadowDistanceMovableLight;
+            auto ShadowBias = Component->ShadowBias;
+            
             *FileWriter << Color;
             *FileWriter << Direction;
             *FileWriter << Intensity;
+            *FileWriter << ShadowDistance;
+            *FileWriter << ShadowBias;
         }
 
         TArray<AActor*> AllPointLightActors;
