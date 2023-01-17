@@ -578,7 +578,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
             MaterialInstace->GetAllScalarParameterInfo(OutScalarParameterInfo, GuidsScalar);
             for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
             {
-                if (ParameterInfo.Name == FName("Metallic"))
+                if (ParameterInfo.Name == FName("MetallicScale"))
                 {
                     float Metallic = 0.0f;
                     if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Metallic))
@@ -592,7 +592,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
 
             for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
             {
-                if (ParameterInfo.Name == FName("Specular"))
+                if (ParameterInfo.Name == FName("SpecularScale"))
                 {
                     float Specular = 0.0f;
                     if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Specular))
@@ -606,7 +606,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
 
             for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
             {
-                if (ParameterInfo.Name == FName("Roughness"))
+                if (ParameterInfo.Name == FName("RoughnessScale"))
                 {
                     float Roughness = 0.0f;
                     if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Roughness))
@@ -620,7 +620,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
 
             for (const FMaterialParameterInfo& ParameterInfo : OutScalarParameterInfo)
             {
-                if (ParameterInfo.Name == FName("Opacity"))
+                if (ParameterInfo.Name == FName("OpacityScale"))
                 {
                     float Opacity = 1.0f;
                     if (MaterialInstace->GetScalarParameterValue(ParameterInfo, Opacity))
@@ -637,7 +637,21 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
             MaterialInstace->GetAllVectorParameterInfo(OutVectorParameterInfo, GuidsVector);
             for (const FMaterialParameterInfo& ParameterInfo : OutVectorParameterInfo)
             {
-                if (ParameterInfo.Name == FName("EmissiveColor"))
+                if (ParameterInfo.Name == FName("BaseColorScale"))
+                {
+                    FLinearColor BaseColor;
+                    if (MaterialInstace->GetVectorParameterValue(ParameterInfo, BaseColor))
+                    {
+                        *FileWriter << BaseColor;
+                    }
+
+                    break;
+                }
+            }
+
+            for (const FMaterialParameterInfo& ParameterInfo : OutVectorParameterInfo)
+            {
+                if (ParameterInfo.Name == FName("EmissiveColorScale"))
                 {
                     FLinearColor EmissiveColor;
                     if (MaterialInstace->GetVectorParameterValue(ParameterInfo, EmissiveColor))
@@ -651,7 +665,7 @@ bool UObjectExporterBPLibrary::ExportMaterialInstance(const UMaterialInstance* M
 
             for (const FMaterialParameterInfo& ParameterInfo : OutVectorParameterInfo)
             {
-                if (ParameterInfo.Name == FName("SubsurfaceColor"))
+                if (ParameterInfo.Name == FName("SubsurfaceColorScale"))
                 {
                     FLinearColor SubsurfaceColor;
                     if (MaterialInstace->GetVectorParameterValue(ParameterInfo, SubsurfaceColor))
