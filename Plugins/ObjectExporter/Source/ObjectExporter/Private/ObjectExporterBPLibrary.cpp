@@ -437,7 +437,8 @@ bool UObjectExporterBPLibrary::ExportAnimSequence(const UAnimSequence* AnimSeque
                 return false;
             }
      
-            const TArray<FBoneAnimationTrack>& BoneAnimationTracks = AnimSequence->GetResampledTrackData();
+            const IAnimationDataModel* ParentDataModel = AnimSequence->GetDataModel();
+            const TArray<FBoneAnimationTrack>& BoneAnimationTracks = ParentDataModel->GetBoneAnimationTracks();
 
             int32 NumberOfFrames = AnimSequence->GetNumberOfSampledKeys();
             *FileWriter << NumberOfFrames;
